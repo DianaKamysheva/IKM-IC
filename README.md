@@ -4,3 +4,12 @@
 Источник данных: https://www.kaggle.com/datasets/abanoubyounanh/imdb-movies-genre-classification
 
 Перед началом работы РАЗАРХЕВИРУЙТЕ датасет.
+Так же, создайте виртуальное окружение (в терменале введите python -m venv .venv)
+Активируй его:
+- Windows: `.venv\Scripts\activate`
+- Mac/Linux: `source .venv/bin/activate`
+В него установите пакеты (в терменале введите pip install -r requirements.txt)
+
+П.С. В коде присутствует обученная модель, так что часть кода не активируется пока вы её не удалите (обучение очень долгое)
+Это временная мера, пока мы не добавим нормальный интерфейс.
+
