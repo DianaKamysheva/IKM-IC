@@ -3,7 +3,7 @@ from analysis import *
 from test import *
 import copy
 
-class Realizqtion:
+class Distributor:
     def __init__(self):
         self.preparation = None
         self.analyzer = None
@@ -14,10 +14,12 @@ class Realizqtion:
         self.y_train = None
         self.cv_results = []
         self.label_encoder=None
+        self.tfidf=None
 
     def preporation_init(self):
         print("Начата предобработка")
         self.preparation = Preparation("Movies_Genre_Description.csv")
+        self.tfidf=self.preparation.get_tfidf()
         self.X_train, self.X_test, self.y_train, self.y_test = self.preparation.catigorToInt()
 
     def fit_pred_model(self):
@@ -46,7 +48,7 @@ class Realizqtion:
             })
 
     def analysis(self):
-        self.analyzer = Analyzer(self.cv_results)
+        self.analyzer = Analyzer(self.cv_results,self.tfidf)
         self.analyzer.metrics(self.label_encoder)
         self.analyzer.plot()
         self.analyzer.show_error_analysis()

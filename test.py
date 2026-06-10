@@ -58,15 +58,15 @@ class Test:
 
     def print_report(self):
         if self.test_results is None:
-            print("Сначала запустите test()")
-            return
+            return "Сначала запустите test()"
 
         model_type = self.model_info['model_type'].upper()
         f1 = self.test_results['f1_score']
         err_from, err_to = self.test_results['main_error']
         err_count = self.test_results['main_error_count']
-
-        print("ИТОГОВЫЙ ОТЧЁТ")
-        print(f"Лучшая модель — {model_type}-модель.")
-        print(f"Её ключевая метрика на новых данных — {f1:.4f}.")
-        print(f"Чаще всего она путает '{err_from}' и '{err_to}' ({err_count} раз).")
+        report=[]
+        report.append("ИТОГОВЫЙ ОТЧЁТ")
+        report.append(f"Лучшая модель — {model_type}-модель.")
+        report.append(f"Её ключевая метрика на новых данных — {f1:.4f}.")
+        report.append(f"Чаще всего она путает '{err_from}' и '{err_to}' ({err_count} раз).")
+        return "\n".join(report)
