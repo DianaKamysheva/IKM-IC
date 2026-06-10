@@ -24,8 +24,12 @@ class Preparation:
         self.y = self.data['GENRE']
         self.label_encoder = None
 
+        self.tfidf = None
+
     def get_label_encoder(self):
         return self.label_encoder
+    def get_tfidf(self):
+        return self.tfidf
 
     def catigorToInt(self):
         # Кодируем целевую переменную
@@ -46,7 +50,7 @@ class Preparation:
 
         print("TF-IDF")
         # TF-IDF
-        tfidf = TfidfVectorizer(
+        self.tfidf = TfidfVectorizer(
             max_features=2500,
             stop_words='english',
             lowercase=True,
@@ -55,7 +59,7 @@ class Preparation:
             max_df=0.8
         )
         texts = self.X["DESCRIPTION"].fillna('')
-        tfidf_matrix = tfidf.fit_transform(texts)
+        tfidf_matrix = self.tfidf.fit_transform(texts)
         tfidf_df = pd.DataFrame(
             tfidf_matrix.toarray(),
             columns=[f'word_{i}' for i in range(tfidf_matrix.shape[1])]

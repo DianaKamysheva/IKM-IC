@@ -8,7 +8,7 @@ import seaborn as sns
 import pickle
 
 class Analyzer:
-    def __init__(self,cv):
+    def __init__(self,cv,tfidf):
         self.cv_results = cv
         self.all_true = None
         self.all_pred_simple = None
@@ -16,15 +16,13 @@ class Analyzer:
         self.classes = None
         self.metrics_simple = None
         self.metrics_hard = None
+        self.tfidf=tfidf
 
 
     def metrics(self,label_encoder):
         all_true = []
         all_pred_simple = []
         all_pred_hard = []
-
-        best_f1_per_fold_simple = []
-        best_f1_per_fold_hard = []
 
         for fold in self.cv_results:
             all_true.extend(fold['y_true'])
@@ -94,21 +92,23 @@ class Analyzer:
                 'model': self.cv_results[best_fold_idx]['simple_model'],
                 'fold': best_fold_idx + 1,
                 'f1_score': best_fold_f1,
-                'label_encoder': label_encoder
+                'label_encoder': label_encoder,
+                'tfidf': self.tfidf
             }
 
 
     def save_best_model(self, filepath='best_model.pkl'):
         if not hasattr(self, 'best_model_info') or self.best_model_info is None:
-            print("Сначала запустите metrics()")
-            return
+            return "Сначала запустите metrics()"
 
         with open(filepath, 'wb') as f:
             pickle.dump(self.best_model_info, f)
 
-        print(f"Модель сохранена: {filepath}")
-        print(f"Тип: {self.best_model_info['model_type']}")
-        print(f"F1: {self.best_model_info['f1_score']:.4f}")
+        report=[]
+        report.append(f"Модель сохранена: {filepath}")
+        report.append(f"Тип: {self.best_model_info['model_type']}")
+        report.append(f"F1: {self.best_model_info['f1_score']:.4f}")
+        return "\n".join(report)
 
 
 

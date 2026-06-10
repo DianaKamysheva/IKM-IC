@@ -11,7 +11,7 @@ from pathlib import Path
 # Press the green button in the gutter to run the script.
 
 if __name__ == '__main__':
-    test_reliz = Realizqtion()
+    test_reliz = Distributor()
     test_reliz.preporation_init()
     print("Предобработка завершена")
     if Path('best_model.pkl').exists()==False:
