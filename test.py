@@ -16,15 +16,18 @@ class Test:
     def test_data(self, X_test, y_test):
         if self.model_info is None:
             self.load_model()
+
         model = self.model_info['model']
         model_type = self.model_info['model_type']
         label_encoder = self.model_info['label_encoder']
 
-        if model_type == 'simple':
-            y_pred = model.predict(X_test)
-        else:
+        if hasattr(model, f'predict_{model_type}'):
+            y_pred = getattr(model, f'predict_{model_type}')(X_test)
+        elif hasattr(model, 'predict'):
             y_pred_encoded = model.predict(X_test)
             y_pred = label_encoder.inverse_transform(y_pred_encoded)
+        else:
+            raise AttributeError(f"Модель типа {model_type} не имеет метода predict")
 
         if isinstance(y_pred[0], str) and not isinstance(y_test[0], str):
             y_test = label_encoder.inverse_transform(y_test)

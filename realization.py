@@ -19,8 +19,8 @@ class Distributor:
     def preporation_init(self):
         print("Начата предобработка")
         self.preparation = Preparation("Movies_Genre_Description.csv")
-        self.tfidf=self.preparation.get_tfidf()
         self.X_train, self.X_test, self.y_train, self.y_test = self.preparation.catigorToInt()
+        self.tfidf=self.preparation.get_tfidf()
 
     def fit_pred_model(self):
         print("Начато предсказание")
@@ -44,7 +44,7 @@ class Distributor:
                 'y_pred_simple': y_pred_simple,
                 'y_pred_hard': y_pred_hard,
                 'simple_model': copy.deepcopy(fit),
-                'hard_model': copy.deepcopy(fit.model)
+                'hard_model': copy.deepcopy(fit)
             })
 
     def analysis(self):

@@ -73,7 +73,8 @@ class Analyzer:
                 'model': self.cv_results[best_fold_idx]['hard_model'],
                 'fold': best_fold_idx + 1,
                 'f1_score': best_fold_f1,
-                'label_encoder': label_encoder
+                'label_encoder': label_encoder,
+                'tfidf': self.tfidf
             }
         else:
             for idx, fold in enumerate(self.cv_results):
@@ -101,14 +102,19 @@ class Analyzer:
         if not hasattr(self, 'best_model_info') or self.best_model_info is None:
             return "Сначала запустите metrics()"
 
+        self.best_model_info['tfidf'] = self.tfidf
+
         with open(filepath, 'wb') as f:
             pickle.dump(self.best_model_info, f)
 
-        report=[]
-        report.append(f"Модель сохранена: {filepath}")
-        report.append(f"Тип: {self.best_model_info['model_type']}")
-        report.append(f"F1: {self.best_model_info['f1_score']:.4f}")
-        return "\n".join(report)
+        print(f"Модель сохранена: {filepath}")
+        print(f"Тип: {self.best_model_info['model_type']}")
+        print(f"F1: {self.best_model_info['f1_score']:.4f}")
+
+        return {
+            'model_type': self.best_model_info['model_type'],
+            'f1_score': self.best_model_info['f1_score']
+        }
 
 
 
@@ -175,19 +181,21 @@ class Analyzer:
         axes[1, 1].set_title('Где Hard лучше/хуже Simple')
 
         plt.tight_layout()
-        plt.show()
+        plt.savefig('comparison_metrics.png', dpi=150, bbox_inches='tight')
+        plt.close()
 
         print(df_comparison.to_string(index=False))
-
         return df_comparison
 
     def show_error_analysis(self, prediction_type='hard'):
         if prediction_type == 'hard':
             y_pred = self.all_pred_hard_encoded
             title = 'Hard predictions'
+            filename = 'confusion_matrix_hard.png'
         else:
             y_pred = self.all_pred_simple
             title = 'Simple predictions'
+            filename = 'confusion_matrix_simple.png'
 
         y_true = np.array(self.all_true)
         cm = confusion_matrix(y_true, y_pred)
@@ -237,7 +245,11 @@ class Analyzer:
         axes[1].invert_yaxis()
 
         plt.tight_layout()
-        plt.show()
+        plt.savefig(filename, dpi=150, bbox_inches='tight')
+        plt.close()
+
+        print(f"\nТоп-5 ошибок ({title}):")
+        print(errors_df.head(5).to_string(index=False))
 
         return errors_df
 
